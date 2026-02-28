@@ -49,78 +49,115 @@ class PageErrorBoundary extends React.Component<
 }
 
 // ---- Initial Data (loaded into state so mutations work) ----
+// All totals verified: sum of (price * qty) for each item
 function getInitialOrders(): Order[] {
   return [
-    { id: 'ORD-001', phone: '+1 (555) 123-4567', items: [{ name: 'Margherita Pizza', qty: 2, price: 14.99 }, { name: 'Caesar Salad', qty: 1, price: 8.99 }], total: 38.97, status: 'completed', timestamp: new Date('2026-02-28T10:30:00') },
-    { id: 'ORD-002', phone: '+1 (555) 234-5678', items: [{ name: 'Pasta Carbonara', qty: 1, price: 16.99 }, { name: 'Garlic Bread', qty: 2, price: 5.99 }], total: 28.97, status: 'in_progress', timestamp: new Date('2026-02-28T11:15:00') },
-    { id: 'ORD-003', phone: '+1 (555) 345-6789', items: [{ name: 'Grilled Salmon', qty: 1, price: 22.99 }, { name: 'House Salad', qty: 1, price: 7.99 }, { name: 'Lemonade', qty: 2, price: 3.99 }], total: 38.96, status: 'new', timestamp: new Date('2026-02-28T12:00:00') },
-    { id: 'ORD-004', phone: '+1 (555) 456-7890', items: [{ name: 'BBQ Chicken Wings', qty: 3, price: 12.99 }], total: 38.97, status: 'completed', timestamp: new Date('2026-02-28T09:45:00') },
-    { id: 'ORD-005', phone: '+1 (555) 567-8901', items: [{ name: 'Veggie Burger', qty: 2, price: 13.99 }, { name: 'Sweet Potato Fries', qty: 2, price: 6.99 }], total: 41.96, status: 'new', timestamp: new Date('2026-02-28T13:20:00') },
+    { id: 'ORD-1001', phone: '+1 (555) 123-4567', items: [{ name: 'Margherita Pizza', qty: 2, price: 14.99 }, { name: 'Caesar Salad', qty: 1, price: 8.99 }], total: 38.97, status: 'completed', timestamp: new Date('2026-02-28T10:30:00') },
+    { id: 'ORD-1002', phone: '+1 (555) 234-5678', items: [{ name: 'Pasta Carbonara', qty: 1, price: 16.99 }, { name: 'Garlic Bread', qty: 2, price: 5.99 }], total: 28.97, status: 'in_progress', timestamp: new Date('2026-02-28T11:15:00') },
+    { id: 'ORD-1003', phone: '+1 (555) 345-6789', items: [{ name: 'Grilled Salmon', qty: 1, price: 22.99 }, { name: 'House Salad', qty: 1, price: 7.99 }, { name: 'Lemonade', qty: 2, price: 3.99 }], total: 38.96, status: 'new', timestamp: new Date('2026-02-28T12:00:00') },
+    { id: 'ORD-1004', phone: '+1 (555) 456-7890', items: [{ name: 'BBQ Chicken Wings', qty: 3, price: 12.99 }], total: 38.97, status: 'completed', timestamp: new Date('2026-02-28T09:45:00') },
+    { id: 'ORD-1005', phone: '+1 (555) 567-8901', items: [{ name: 'Veggie Burger', qty: 2, price: 13.99 }, { name: 'Sweet Potato Fries', qty: 2, price: 6.99 }], total: 41.96, status: 'new', timestamp: new Date('2026-02-28T13:20:00') },
+    { id: 'ORD-1006', phone: '+1 (555) 678-9012', items: [{ name: 'Grilled Salmon', qty: 2, price: 22.99 }, { name: 'Lemonade', qty: 2, price: 3.99 }], total: 53.96, status: 'new', timestamp: new Date('2026-02-28T14:05:00') },
+    { id: 'ORD-1007', phone: '+1 (555) 789-0123', items: [{ name: 'Margherita Pizza', qty: 1, price: 14.99 }, { name: 'Pasta Carbonara', qty: 1, price: 16.99 }, { name: 'Garlic Bread', qty: 1, price: 5.99 }, { name: 'Lemonade', qty: 3, price: 3.99 }], total: 49.94, status: 'completed', timestamp: new Date('2026-02-28T08:30:00') },
+    { id: 'ORD-1008', phone: '+1 (555) 890-1234', items: [{ name: 'BBQ Chicken Wings', qty: 2, price: 12.99 }, { name: 'Sweet Potato Fries', qty: 1, price: 6.99 }, { name: 'House Salad', qty: 1, price: 7.99 }], total: 40.96, status: 'in_progress', timestamp: new Date('2026-02-28T13:50:00') },
   ]
 }
 
 function getInitialCalls(): CallRecord[] {
   return [
     {
-      id: 'CALL-001', phone: '+1 (555) 123-4567', duration: '3:42', date: new Date('2026-02-28T10:30:00'), starred: false,
+      id: 'CALL-101', phone: '+1 (555) 123-4567', duration: '3:42', date: new Date('2026-02-28T10:30:00'), starred: false,
       transcript: [
         { role: 'agent', text: 'Hi, thanks for calling! What can I get started for you today?', time: '0:00' },
-        { role: 'user', text: 'Hi, I would like to order two Margherita pizzas and a Caesar salad.', time: '0:05' },
-        { role: 'agent', text: 'Great choices! That will be two Margherita pizzas at $14.99 each and one Caesar salad at $8.99. Your total comes to $38.97. Can I confirm that order for you?', time: '0:12' },
-        { role: 'user', text: 'Yes, that sounds right. How long will it take?', time: '0:22' },
-        { role: 'agent', text: 'Your order should be ready in about 25-30 minutes. Is there anything else I can help you with?', time: '0:28' },
-        { role: 'user', text: 'No, that is all. Thank you!', time: '0:35' },
-        { role: 'agent', text: 'Thank you for your order! Have a wonderful day!', time: '0:38' },
+        { role: 'user', text: 'Hi, I would like to order two Margherita pizzas and a Caesar salad.', time: '0:08' },
+        { role: 'agent', text: 'Great choices! That will be two Margherita Pizzas at $14.99 each and one Caesar Salad at $8.99. Your total comes to $38.97. Can I confirm that for you?', time: '0:15' },
+        { role: 'user', text: 'Yes, that sounds right. How long will it take?', time: '0:45' },
+        { role: 'agent', text: 'Your order should be ready in about 25 to 30 minutes. Is there anything else I can help with?', time: '0:52' },
+        { role: 'user', text: 'No, that is all. Thank you!', time: '1:10' },
+        { role: 'agent', text: 'Thank you for your order! Have a wonderful day!', time: '1:15' },
       ],
       orderSummary: { items: [{ name: 'Margherita Pizza', qty: 2, price: 14.99 }, { name: 'Caesar Salad', qty: 1, price: 8.99 }], total: 38.97 },
     },
     {
-      id: 'CALL-002', phone: '+1 (555) 234-5678', duration: '2:15', date: new Date('2026-02-28T11:15:00'), starred: true,
+      id: 'CALL-102', phone: '+1 (555) 234-5678', duration: '2:15', date: new Date('2026-02-28T11:15:00'), starred: true,
       transcript: [
         { role: 'agent', text: 'Hello! Welcome to our restaurant. How may I assist you today?', time: '0:00' },
         { role: 'user', text: 'I would like one Pasta Carbonara and two orders of Garlic Bread please.', time: '0:06' },
-        { role: 'agent', text: 'One Pasta Carbonara at $16.99 and two Garlic Breads at $5.99 each. Total of $28.97. Shall I place that order?', time: '0:14' },
-        { role: 'user', text: 'Yes please.', time: '0:22' },
-        { role: 'agent', text: 'Order placed! It will be ready in about 20 minutes. Thank you for calling!', time: '0:25' },
+        { role: 'agent', text: 'One Pasta Carbonara at $16.99 and two Garlic Breads at $5.99 each. That is a total of $28.97. Shall I place that order?', time: '0:18' },
+        { role: 'user', text: 'Yes please.', time: '0:30' },
+        { role: 'agent', text: 'Order placed! It will be ready in about 20 minutes. Thank you for calling!', time: '0:35' },
       ],
       orderSummary: { items: [{ name: 'Pasta Carbonara', qty: 1, price: 16.99 }, { name: 'Garlic Bread', qty: 2, price: 5.99 }], total: 28.97 },
     },
     {
-      id: 'CALL-003', phone: '+1 (555) 345-6789', duration: '4:10', date: new Date('2026-02-28T12:00:00'), starred: false,
+      id: 'CALL-103', phone: '+1 (555) 345-6789', duration: '4:10', date: new Date('2026-02-28T12:00:00'), starred: false,
       transcript: [
         { role: 'agent', text: 'Hi there! Thank you for calling. What would you like to order?', time: '0:00' },
         { role: 'user', text: 'What do you recommend for lunch?', time: '0:05' },
-        { role: 'agent', text: 'Our Grilled Salmon is very popular and pairs wonderfully with our House Salad. We also have fresh lemonade!', time: '0:10' },
-        { role: 'user', text: 'That sounds perfect. I will take one Grilled Salmon, one House Salad, and two lemonades.', time: '0:20' },
-        { role: 'agent', text: 'Excellent! One Grilled Salmon at $22.99, one House Salad at $7.99, and two Lemonades at $3.99 each. Your total is $38.96. Confirmed?', time: '0:28' },
-        { role: 'user', text: 'Yes, confirmed.', time: '0:38' },
-        { role: 'agent', text: 'Your order is confirmed! It will be ready in approximately 30 minutes. Have a great day!', time: '0:42' },
+        { role: 'agent', text: 'Our Grilled Salmon is very popular and pairs wonderfully with our House Salad. We also have fresh lemonade!', time: '0:12' },
+        { role: 'user', text: 'That sounds perfect. I will take one Grilled Salmon, one House Salad, and two lemonades.', time: '0:28' },
+        { role: 'agent', text: 'Excellent! One Grilled Salmon at $22.99, one House Salad at $7.99, and two Lemonades at $3.99 each. Your total is $38.96. Shall I confirm?', time: '0:40' },
+        { role: 'user', text: 'Yes, confirmed.', time: '0:55' },
+        { role: 'agent', text: 'Your order is confirmed! It will be ready in approximately 30 minutes. Have a great day!', time: '1:00' },
       ],
       orderSummary: { items: [{ name: 'Grilled Salmon', qty: 1, price: 22.99 }, { name: 'House Salad', qty: 1, price: 7.99 }, { name: 'Lemonade', qty: 2, price: 3.99 }], total: 38.96 },
     },
     {
-      id: 'CALL-004', phone: '+1 (555) 456-7890', duration: '1:50', date: new Date('2026-02-28T09:45:00'), starred: false,
+      id: 'CALL-104', phone: '+1 (555) 456-7890', duration: '1:50', date: new Date('2026-02-28T09:45:00'), starred: false,
       transcript: [
         { role: 'agent', text: 'Good morning! What can I get for you today?', time: '0:00' },
         { role: 'user', text: 'Three orders of BBQ Chicken Wings, please.', time: '0:04' },
-        { role: 'agent', text: 'Three BBQ Chicken Wings at $12.99 each, total of $38.97. Should I confirm?', time: '0:10' },
-        { role: 'user', text: 'Yes, go ahead!', time: '0:15' },
-        { role: 'agent', text: 'Done! Ready in 15 minutes. Thanks for calling!', time: '0:18' },
+        { role: 'agent', text: 'Three BBQ Chicken Wings at $12.99 each, bringing your total to $38.97. Should I confirm that?', time: '0:12' },
+        { role: 'user', text: 'Yes, go ahead!', time: '0:20' },
+        { role: 'agent', text: 'Done! Your order will be ready in about 15 minutes. Thanks for calling!', time: '0:25' },
       ],
       orderSummary: { items: [{ name: 'BBQ Chicken Wings', qty: 3, price: 12.99 }], total: 38.97 },
     },
     {
-      id: 'CALL-005', phone: '+1 (555) 567-8901', duration: '2:55', date: new Date('2026-02-28T13:20:00'), starred: true,
+      id: 'CALL-105', phone: '+1 (555) 567-8901', duration: '2:55', date: new Date('2026-02-28T13:20:00'), starred: true,
       transcript: [
         { role: 'agent', text: 'Hi! Thanks for calling. How can I help you?', time: '0:00' },
         { role: 'user', text: 'I am looking for vegetarian options. What do you have?', time: '0:05' },
-        { role: 'agent', text: 'We have a delicious Veggie Burger and Sweet Potato Fries that are both vegetarian-friendly!', time: '0:10' },
-        { role: 'user', text: 'Great, I will take two of each.', time: '0:18' },
-        { role: 'agent', text: 'Two Veggie Burgers at $13.99 each and two Sweet Potato Fries at $6.99 each. Total is $41.96. Order confirmed?', time: '0:24' },
-        { role: 'user', text: 'Confirmed, thank you.', time: '0:30' },
-        { role: 'agent', text: 'Your order has been placed! Enjoy your meal!', time: '0:33' },
+        { role: 'agent', text: 'We have a delicious Veggie Burger with fresh toppings on a brioche bun, and our Sweet Potato Fries with chipotle mayo are a customer favorite!', time: '0:14' },
+        { role: 'user', text: 'Great, I will take two of each.', time: '0:25' },
+        { role: 'agent', text: 'Two Veggie Burgers at $13.99 each and two Sweet Potato Fries at $6.99 each. Your total is $41.96. Order confirmed?', time: '0:35' },
+        { role: 'user', text: 'Confirmed, thank you.', time: '0:45' },
+        { role: 'agent', text: 'Your order has been placed! Enjoy your meal!', time: '0:50' },
       ],
       orderSummary: { items: [{ name: 'Veggie Burger', qty: 2, price: 13.99 }, { name: 'Sweet Potato Fries', qty: 2, price: 6.99 }], total: 41.96 },
+    },
+    {
+      id: 'CALL-106', phone: '+1 (555) 678-9012', duration: '3:05', date: new Date('2026-02-28T14:05:00'), starred: false,
+      transcript: [
+        { role: 'agent', text: 'Hi, thanks for calling! What can I get for you today?', time: '0:00' },
+        { role: 'user', text: 'Can I get two Grilled Salmons and two lemonades?', time: '0:08' },
+        { role: 'agent', text: 'Of course! Two Grilled Salmons at $22.99 each and two Lemonades at $3.99 each. Your total is $53.96. Shall I confirm?', time: '0:18' },
+        { role: 'user', text: 'Yes please, thank you!', time: '0:30' },
+        { role: 'agent', text: 'Order confirmed! It will be ready in about 35 minutes. Have a great afternoon!', time: '0:35' },
+      ],
+      orderSummary: { items: [{ name: 'Grilled Salmon', qty: 2, price: 22.99 }, { name: 'Lemonade', qty: 2, price: 3.99 }], total: 53.96 },
+    },
+    {
+      id: 'CALL-107', phone: '+1 (555) 789-0123', duration: '4:30', date: new Date('2026-02-28T08:30:00'), starred: true,
+      transcript: [
+        { role: 'agent', text: 'Good morning! Welcome to our restaurant. What can I get started for you?', time: '0:00' },
+        { role: 'user', text: 'I want to place a big order for the office. Can I get one Margherita Pizza, one Pasta Carbonara, one Garlic Bread, and three lemonades?', time: '0:10' },
+        { role: 'agent', text: 'Sure thing! One Margherita Pizza at $14.99, one Pasta Carbonara at $16.99, one Garlic Bread at $5.99, and three Lemonades at $3.99 each. That brings your total to $49.94. Would you like to confirm?', time: '0:25' },
+        { role: 'user', text: 'That is perfect. Yes, confirmed!', time: '0:40' },
+        { role: 'agent', text: 'Wonderful! Your order is placed. It will be ready in about 35 to 40 minutes. Thank you and enjoy!', time: '0:48' },
+      ],
+      orderSummary: { items: [{ name: 'Margherita Pizza', qty: 1, price: 14.99 }, { name: 'Pasta Carbonara', qty: 1, price: 16.99 }, { name: 'Garlic Bread', qty: 1, price: 5.99 }, { name: 'Lemonade', qty: 3, price: 3.99 }], total: 49.94 },
+    },
+    {
+      id: 'CALL-108', phone: '+1 (555) 890-1234', duration: '2:40', date: new Date('2026-02-28T13:50:00'), starred: false,
+      transcript: [
+        { role: 'agent', text: 'Hello! Thanks for calling. What would you like to order?', time: '0:00' },
+        { role: 'user', text: 'Two BBQ Chicken Wings, one Sweet Potato Fries, and one House Salad please.', time: '0:08' },
+        { role: 'agent', text: 'Two BBQ Chicken Wings at $12.99 each, one Sweet Potato Fries at $6.99, and one House Salad at $7.99. Your total comes to $40.96. Shall I place that?', time: '0:20' },
+        { role: 'user', text: 'Yes, go ahead.', time: '0:32' },
+        { role: 'agent', text: 'All set! Your order is placed and will be ready in about 20 minutes. Thanks for calling!', time: '0:38' },
+      ],
+      orderSummary: { items: [{ name: 'BBQ Chicken Wings', qty: 2, price: 12.99 }, { name: 'Sweet Potato Fries', qty: 1, price: 6.99 }, { name: 'House Salad', qty: 1, price: 7.99 }], total: 40.96 },
     },
   ]
 }
@@ -171,13 +208,15 @@ export default function Page() {
   const handleCallEnd = useCallback((transcript: TranscriptEntry[]) => {
     if (!Array.isArray(transcript) || transcript.length === 0) return
 
+    const now = Date.now()
+
     setOrders(prev => {
       const safeArr = Array.isArray(prev) ? prev : []
-      const orderId = `ORD-${String(safeArr.length + 1).padStart(3, '0')}`
+      const orderId = `ORD-${now}`
       const newOrder: Order = {
         id: orderId,
         phone: 'Voice Caller',
-        items: [{ name: 'Voice Order', qty: 1, price: 0 }],
+        items: [{ name: 'Voice Order (see transcript)', qty: 1, price: 0 }],
         total: 0,
         status: 'new',
         timestamp: new Date(),
@@ -187,7 +226,7 @@ export default function Page() {
 
     setCalls(prev => {
       const safeArr = Array.isArray(prev) ? prev : []
-      const callId = `CALL-${String(safeArr.length + 1).padStart(3, '0')}`
+      const callId = `CALL-${now}`
       const newCall: CallRecord = {
         id: callId,
         phone: 'Voice Caller',
