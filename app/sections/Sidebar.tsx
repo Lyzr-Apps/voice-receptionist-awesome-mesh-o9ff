@@ -24,7 +24,7 @@ export default function Sidebar({ activeSection, onSectionChange, isCollapsed, o
   return (
     <aside
       className={cn(
-        "h-screen flex flex-col border-r border-border/50 transition-all duration-300 relative",
+        "h-screen sticky top-0 flex flex-col border-r border-border/50 transition-all duration-300 relative flex-shrink-0",
         isCollapsed ? "w-[72px]" : "w-[240px]"
       )}
       style={{

@@ -8,7 +8,6 @@ import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Separator } from '@/components/ui/separator'
 import { useRAGKnowledgeBase } from '@/lib/ragKnowledgeBase'
 import type { RAGDocument } from '@/lib/ragKnowledgeBase'
 import { cn } from '@/lib/utils'
@@ -38,9 +37,10 @@ export default function SettingsPage({ products, onProductUpdate }: SettingsPage
 
   const { documents, loading, error, fetchDocuments, uploadDocument, removeDocuments } = useRAGKnowledgeBase()
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchDocuments(RAG_ID)
-  }, [])
+  }, []) // intentionally run once on mount
 
   const handleFileUpload = useCallback(async (files: FileList | null) => {
     if (!files || files.length === 0) return

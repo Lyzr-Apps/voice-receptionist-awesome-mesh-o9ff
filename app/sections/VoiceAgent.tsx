@@ -17,13 +17,12 @@ export interface TranscriptEntry {
 }
 
 interface VoiceAgentProps {
-  onCallStart?: () => void
   onCallEnd?: (transcript: TranscriptEntry[]) => void
   isCallActive: boolean
   setIsCallActive: (active: boolean) => void
 }
 
-export default function VoiceAgent({ onCallStart, onCallEnd, isCallActive, setIsCallActive }: VoiceAgentProps) {
+export default function VoiceAgent({ onCallEnd, isCallActive, setIsCallActive }: VoiceAgentProps) {
   const [isConnecting, setIsConnecting] = useState(false)
   const [isMuted, setIsMuted] = useState(false)
   const isMutedRef = useRef(false)
@@ -159,7 +158,6 @@ export default function VoiceAgent({ onCallStart, onCallEnd, isCallActive, setIs
       ws.onopen = () => {
         setIsCallActive(true)
         setIsConnecting(false)
-        onCallStart?.()
 
         // Set up mic audio processing
         const source = ctx.createMediaStreamSource(stream)
@@ -232,7 +230,7 @@ export default function VoiceAgent({ onCallStart, onCallEnd, isCallActive, setIs
       setError(err instanceof Error ? err.message : 'Failed to start call')
       setIsConnecting(false)
     }
-  }, [onCallStart, onCallEnd, setIsCallActive, playAudioChunk])
+  }, [onCallEnd, setIsCallActive, playAudioChunk])
 
   const endCall = useCallback(() => {
     if (wsRef.current) {
