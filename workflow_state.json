@@ -1,0 +1,24 @@
+{
+  "agents": {
+    "voice_receptionist_agent": {
+      "agent_id": "69a27a68d56a3c78b8262a31",
+      "name": "Voice Receptionist Agent",
+      "agent_type": "voice",
+      "accessor": "websocket",
+      "voice_config": true,
+      "has_knowledge_base": true,
+      "rag_id": "69a27a5400c2d274880f6c77",
+      "rag_name": "productmenucatalogl3p9",
+      "image_output_config": false,
+      "file_output": false
+    }
+  },
+  "rag_ids": {
+    "product_menu_catalog": {
+      "rag_id": "69a27a5400c2d274880f6c77",
+      "rag_name": "productmenucatalogl3p9",
+      "description": "Knowledge base containing the business product/menu catalog with item names, descriptions, prices, and availability."
+    }
+  },
+  "schedules": {}
+}
