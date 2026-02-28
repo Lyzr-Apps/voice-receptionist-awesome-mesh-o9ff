@@ -29,6 +29,33 @@ interface OrdersDashboardProps {
   isCallActive: boolean
 }
 
+// Image map for food items
+const FOOD_IMAGES: Record<string, string> = {
+  'margherita pizza': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=80&h=80&fit=crop&crop=center&q=80',
+  'pasta carbonara': 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=80&h=80&fit=crop&crop=center&q=80',
+  'grilled salmon': 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=80&h=80&fit=crop&crop=center&q=80',
+  'caesar salad': 'https://images.unsplash.com/photo-1550304943-4f24f54ddde9?w=80&h=80&fit=crop&crop=center&q=80',
+  'bbq chicken wings': 'https://images.unsplash.com/photo-1608039829572-9b0189f23a35?w=80&h=80&fit=crop&crop=center&q=80',
+  'veggie burger': 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=80&h=80&fit=crop&crop=center&q=80',
+  'garlic bread': 'https://images.unsplash.com/photo-1549931319-a545753467c8?w=80&h=80&fit=crop&crop=center&q=80',
+  'house salad': 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=80&h=80&fit=crop&crop=center&q=80',
+  'sweet potato fries': 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=80&h=80&fit=crop&crop=center&q=80',
+  'lemonade': 'https://images.unsplash.com/photo-1621263764928-df1444c5e859?w=80&h=80&fit=crop&crop=center&q=80',
+}
+
+function getFoodImage(name: string): string | null {
+  const nameLower = (name ?? '').toLowerCase()
+  for (const [key, url] of Object.entries(FOOD_IMAGES)) {
+    if (nameLower.includes(key) || key.includes(nameLower)) return url
+  }
+  // Partial match fallback
+  for (const [key, url] of Object.entries(FOOD_IMAGES)) {
+    const words = key.split(' ')
+    if (words.some(w => nameLower.includes(w) && w.length > 3)) return url
+  }
+  return null
+}
+
 const statusStyles: Record<Order['status'], string> = {
   new: 'bg-primary/15 text-primary border-primary/30',
   in_progress: 'bg-accent/15 text-accent border-accent/30',
@@ -118,9 +145,19 @@ export default function OrdersDashboard({ orders, onStatusChange, isCallActive }
                     >
                       <span className="text-sm font-semibold text-primary w-24 flex-shrink-0">{order.id}</span>
                       <span className="text-sm text-foreground flex-1 min-w-0 truncate">{order?.phone ?? 'Unknown'}</span>
-                      <span className="text-sm text-muted-foreground hidden md:block w-40">
-                        {Array.isArray(order?.items) ? order.items.map(i => `${i?.qty ?? 1}x ${i?.name ?? ''}`).join(', ') : 'No items'}
-                      </span>
+                      <div className="hidden md:flex items-center gap-1.5 w-48 flex-shrink-0">
+                        {Array.isArray(order?.items) && order.items.slice(0, 3).map((item, idx) => {
+                          const imgUrl = getFoodImage(item?.name ?? '')
+                          return imgUrl ? (
+                            <div key={idx} className="w-7 h-7 rounded-md overflow-hidden bg-muted flex-shrink-0" title={`${item?.qty ?? 1}x ${item?.name ?? ''}`}>
+                              <img src={imgUrl} alt={item?.name ?? ''} className="w-full h-full object-cover" loading="lazy" />
+                            </div>
+                          ) : null
+                        })}
+                        <span className="text-xs text-muted-foreground truncate ml-1">
+                          {Array.isArray(order?.items) ? order.items.map(i => `${i?.qty ?? 1}x ${i?.name ?? ''}`).join(', ') : 'No items'}
+                        </span>
+                      </div>
                       <span className="text-sm font-semibold w-20 text-right">${(order?.total ?? 0).toFixed(2)}</span>
                       <Badge variant="outline" className={cn("text-xs border", statusStyles[order.status])}>
                         {statusLabels[order.status]}
@@ -136,13 +173,21 @@ export default function OrdersDashboard({ orders, onStatusChange, isCallActive }
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3">
                           <div>
                             <h4 className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wider">Order Items</h4>
-                            <div className="space-y-1.5">
-                              {Array.isArray(order?.items) && order.items.map((item, idx) => (
-                                <div key={idx} className="flex items-center justify-between text-sm">
-                                  <span>{item?.qty ?? 1}x {item?.name ?? 'Item'}</span>
-                                  <span className="font-medium">${((item?.price ?? 0) * (item?.qty ?? 1)).toFixed(2)}</span>
-                                </div>
-                              ))}
+                            <div className="space-y-2">
+                              {Array.isArray(order?.items) && order.items.map((item, idx) => {
+                                const imgUrl = getFoodImage(item?.name ?? '')
+                                return (
+                                  <div key={idx} className="flex items-center gap-3 text-sm">
+                                    {imgUrl && (
+                                      <div className="w-9 h-9 rounded-lg overflow-hidden flex-shrink-0 bg-muted">
+                                        <img src={imgUrl} alt={item?.name ?? 'Food'} className="w-full h-full object-cover" loading="lazy" />
+                                      </div>
+                                    )}
+                                    <span className="flex-1">{item?.qty ?? 1}x {item?.name ?? 'Item'}</span>
+                                    <span className="font-medium">${((item?.price ?? 0) * (item?.qty ?? 1)).toFixed(2)}</span>
+                                  </div>
+                                )
+                              })}
                               <div className="flex items-center justify-between text-sm font-bold pt-2 border-t border-border/30">
                                 <span>Total</span>
                                 <span>${(order?.total ?? 0).toFixed(2)}</span>

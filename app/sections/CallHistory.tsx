@@ -8,6 +8,32 @@ import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/lib/utils'
 
+// Image map for food items in order summaries
+const FOOD_IMAGES: Record<string, string> = {
+  'margherita pizza': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=64&h=64&fit=crop&crop=center&q=80',
+  'pasta carbonara': 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=64&h=64&fit=crop&crop=center&q=80',
+  'grilled salmon': 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=64&h=64&fit=crop&crop=center&q=80',
+  'caesar salad': 'https://images.unsplash.com/photo-1550304943-4f24f54ddde9?w=64&h=64&fit=crop&crop=center&q=80',
+  'bbq chicken wings': 'https://images.unsplash.com/photo-1608039829572-9b0189f23a35?w=64&h=64&fit=crop&crop=center&q=80',
+  'veggie burger': 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=64&h=64&fit=crop&crop=center&q=80',
+  'garlic bread': 'https://images.unsplash.com/photo-1549931319-a545753467c8?w=64&h=64&fit=crop&crop=center&q=80',
+  'house salad': 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=64&h=64&fit=crop&crop=center&q=80',
+  'sweet potato fries': 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=64&h=64&fit=crop&crop=center&q=80',
+  'lemonade': 'https://images.unsplash.com/photo-1621263764928-df1444c5e859?w=64&h=64&fit=crop&crop=center&q=80',
+}
+
+function getFoodImage(name: string): string | null {
+  const nameLower = (name ?? '').toLowerCase()
+  for (const [key, url] of Object.entries(FOOD_IMAGES)) {
+    if (nameLower.includes(key) || key.includes(nameLower)) return url
+  }
+  for (const [key, url] of Object.entries(FOOD_IMAGES)) {
+    const words = key.split(' ')
+    if (words.some(w => nameLower.includes(w) && w.length > 3)) return url
+  }
+  return null
+}
+
 export interface TranscriptLine {
   role: 'agent' | 'user'
   text: string
@@ -98,6 +124,20 @@ export default function CallHistory({ calls, onToggleStar }: CallHistoryProps) {
                           <FiStar className={cn("w-3.5 h-3.5", call.starred ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground")} />
                         </button>
                       </div>
+                      {/* Order item thumbnails */}
+                      {call?.orderSummary && Array.isArray(call.orderSummary.items) && call.orderSummary.items.length > 0 && (
+                        <div className="flex items-center gap-1 my-1">
+                          {call.orderSummary.items.slice(0, 4).map((item, idx) => {
+                            const img = getFoodImage(item?.name ?? '')
+                            return img ? (
+                              <div key={idx} className="w-6 h-6 rounded-md overflow-hidden bg-muted flex-shrink-0" title={item?.name ?? ''}>
+                                <img src={img} alt={item?.name ?? ''} className="w-full h-full object-cover" loading="lazy" />
+                              </div>
+                            ) : null
+                          })}
+                          <span className="text-xs text-muted-foreground ml-1">${(call.orderSummary.total ?? 0).toFixed(2)}</span>
+                        </div>
+                      )}
                       <div className="flex items-center justify-between text-xs text-muted-foreground">
                         <span>{call?.duration ?? '0:00'}</span>
                         <span>{call?.date ? new Date(call.date).toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : ''}</span>
@@ -134,13 +174,21 @@ export default function CallHistory({ calls, onToggleStar }: CallHistoryProps) {
                 {selectedCall?.orderSummary && (
                   <div className="mt-3 p-3 rounded-[0.875rem] bg-primary/5 border border-primary/10">
                     <h4 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">Order Summary</h4>
-                    <div className="space-y-1">
-                      {Array.isArray(selectedCall.orderSummary?.items) && selectedCall.orderSummary.items.map((item, i) => (
-                        <div key={i} className="flex justify-between text-sm">
-                          <span>{item?.qty ?? 1}x {item?.name ?? 'Item'}</span>
-                          <span className="font-medium">${((item?.price ?? 0) * (item?.qty ?? 1)).toFixed(2)}</span>
-                        </div>
-                      ))}
+                    <div className="space-y-1.5">
+                      {Array.isArray(selectedCall.orderSummary?.items) && selectedCall.orderSummary.items.map((item, i) => {
+                        const imgUrl = getFoodImage(item?.name ?? '')
+                        return (
+                          <div key={i} className="flex items-center gap-2 text-sm">
+                            {imgUrl && (
+                              <div className="w-7 h-7 rounded-md overflow-hidden flex-shrink-0 bg-muted">
+                                <img src={imgUrl} alt={item?.name ?? 'Food'} className="w-full h-full object-cover" loading="lazy" />
+                              </div>
+                            )}
+                            <span className="flex-1">{item?.qty ?? 1}x {item?.name ?? 'Item'}</span>
+                            <span className="font-medium">${((item?.price ?? 0) * (item?.qty ?? 1)).toFixed(2)}</span>
+                          </div>
+                        )
+                      })}
                       <div className="flex justify-between text-sm font-bold pt-1 border-t border-primary/10">
                         <span>Total</span>
                         <span>${(selectedCall.orderSummary?.total ?? 0).toFixed(2)}</span>

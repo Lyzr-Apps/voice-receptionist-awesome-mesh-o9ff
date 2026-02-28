@@ -127,16 +127,16 @@ function getInitialCalls(): CallRecord[] {
 
 function getInitialProducts(): ProductItem[] {
   return [
-    { id: 'P001', name: 'Margherita Pizza', price: 14.99, description: 'Classic pizza with fresh mozzarella, tomato sauce, and basil', available: true },
-    { id: 'P002', name: 'Pasta Carbonara', price: 16.99, description: 'Creamy pasta with pancetta, egg, and parmesan cheese', available: true },
-    { id: 'P003', name: 'Grilled Salmon', price: 22.99, description: 'Fresh Atlantic salmon with lemon butter sauce', available: true },
-    { id: 'P004', name: 'Caesar Salad', price: 8.99, description: 'Crispy romaine with classic Caesar dressing and croutons', available: true },
-    { id: 'P005', name: 'BBQ Chicken Wings', price: 12.99, description: 'Smoky BBQ glazed chicken wings with ranch dip', available: true },
-    { id: 'P006', name: 'Veggie Burger', price: 13.99, description: 'Plant-based patty with fresh toppings on brioche bun', available: true },
-    { id: 'P007', name: 'Garlic Bread', price: 5.99, description: 'Toasted bread with garlic butter and herbs', available: true },
-    { id: 'P008', name: 'House Salad', price: 7.99, description: 'Mixed greens with seasonal vegetables and vinaigrette', available: true },
-    { id: 'P009', name: 'Sweet Potato Fries', price: 6.99, description: 'Crispy sweet potato fries with chipotle mayo', available: true },
-    { id: 'P010', name: 'Lemonade', price: 3.99, description: 'Freshly squeezed lemonade with a hint of mint', available: true },
+    { id: 'P001', name: 'Margherita Pizza', price: 14.99, description: 'Classic pizza with fresh mozzarella, tomato sauce, and basil', available: true, image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=120&h=120&fit=crop&crop=center&q=80' },
+    { id: 'P002', name: 'Pasta Carbonara', price: 16.99, description: 'Creamy pasta with pancetta, egg, and parmesan cheese', available: true, image: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=120&h=120&fit=crop&crop=center&q=80' },
+    { id: 'P003', name: 'Grilled Salmon', price: 22.99, description: 'Fresh Atlantic salmon with lemon butter sauce', available: true, image: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=120&h=120&fit=crop&crop=center&q=80' },
+    { id: 'P004', name: 'Caesar Salad', price: 8.99, description: 'Crispy romaine with classic Caesar dressing and croutons', available: true, image: 'https://images.unsplash.com/photo-1550304943-4f24f54ddde9?w=120&h=120&fit=crop&crop=center&q=80' },
+    { id: 'P005', name: 'BBQ Chicken Wings', price: 12.99, description: 'Smoky BBQ glazed chicken wings with ranch dip', available: true, image: 'https://images.unsplash.com/photo-1608039829572-9b0189f23a35?w=120&h=120&fit=crop&crop=center&q=80' },
+    { id: 'P006', name: 'Veggie Burger', price: 13.99, description: 'Plant-based patty with fresh toppings on brioche bun', available: true, image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=120&h=120&fit=crop&crop=center&q=80' },
+    { id: 'P007', name: 'Garlic Bread', price: 5.99, description: 'Toasted bread with garlic butter and herbs', available: true, image: 'https://images.unsplash.com/photo-1549931319-a545753467c8?w=120&h=120&fit=crop&crop=center&q=80' },
+    { id: 'P008', name: 'House Salad', price: 7.99, description: 'Mixed greens with seasonal vegetables and vinaigrette', available: true, image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=120&h=120&fit=crop&crop=center&q=80' },
+    { id: 'P009', name: 'Sweet Potato Fries', price: 6.99, description: 'Crispy sweet potato fries with chipotle mayo', available: true, image: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=120&h=120&fit=crop&crop=center&q=80' },
+    { id: 'P010', name: 'Lemonade', price: 3.99, description: 'Freshly squeezed lemonade with a hint of mint', available: true, image: 'https://images.unsplash.com/photo-1621263764928-df1444c5e859?w=120&h=120&fit=crop&crop=center&q=80' },
   ]
 }
 

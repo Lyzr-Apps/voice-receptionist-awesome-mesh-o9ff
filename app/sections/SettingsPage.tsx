@@ -20,6 +20,34 @@ export interface ProductItem {
   price: number
   description: string
   available: boolean
+  image?: string
+}
+
+// Image map for product items based on name keywords
+const PRODUCT_IMAGES: Record<string, string> = {
+  'pizza': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=120&h=120&fit=crop&crop=center&q=80',
+  'pasta': 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=120&h=120&fit=crop&crop=center&q=80',
+  'carbonara': 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=120&h=120&fit=crop&crop=center&q=80',
+  'salmon': 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=120&h=120&fit=crop&crop=center&q=80',
+  'salad': 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=120&h=120&fit=crop&crop=center&q=80',
+  'caesar': 'https://images.unsplash.com/photo-1550304943-4f24f54ddde9?w=120&h=120&fit=crop&crop=center&q=80',
+  'wings': 'https://images.unsplash.com/photo-1608039829572-9b0189f23a35?w=120&h=120&fit=crop&crop=center&q=80',
+  'chicken': 'https://images.unsplash.com/photo-1608039829572-9b0189f23a35?w=120&h=120&fit=crop&crop=center&q=80',
+  'burger': 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=120&h=120&fit=crop&crop=center&q=80',
+  'bread': 'https://images.unsplash.com/photo-1549931319-a545753467c8?w=120&h=120&fit=crop&crop=center&q=80',
+  'garlic': 'https://images.unsplash.com/photo-1549931319-a545753467c8?w=120&h=120&fit=crop&crop=center&q=80',
+  'fries': 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=120&h=120&fit=crop&crop=center&q=80',
+  'lemonade': 'https://images.unsplash.com/photo-1621263764928-df1444c5e859?w=120&h=120&fit=crop&crop=center&q=80',
+  'default': 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=120&h=120&fit=crop&crop=center&q=80',
+}
+
+function getProductImage(product: ProductItem): string {
+  if (product.image) return product.image
+  const nameLower = (product.name ?? '').toLowerCase()
+  for (const [key, url] of Object.entries(PRODUCT_IMAGES)) {
+    if (key !== 'default' && nameLower.includes(key)) return url
+  }
+  return PRODUCT_IMAGES['default']
 }
 
 interface SettingsPageProps {
@@ -213,6 +241,19 @@ export default function SettingsPage({ products, onProductUpdate }: SettingsPage
             <div className="divide-y divide-border/30">
               {safeProducts.map((product) => (
                 <div key={product.id} className="px-6 py-3 flex items-center gap-4">
+                  {/* Product Image */}
+                  <div className="w-12 h-12 rounded-[0.625rem] overflow-hidden flex-shrink-0 bg-muted">
+                    <img
+                      src={getProductImage(product)}
+                      alt={product?.name ?? 'Product'}
+                      className={cn(
+                        "w-full h-full object-cover transition-opacity",
+                        !(product?.available ?? true) && "opacity-40 grayscale"
+                      )}
+                      loading="lazy"
+                    />
+                  </div>
+
                   {editingId === product.id ? (
                     <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-2">
                       <Input
